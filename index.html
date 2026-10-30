@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REALITY CHECK – Face Your Truth!</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        purple: {
+                            700: '#7E22CE',
+                            800: '#6B21A8',
+                            900: '#581C87',
+                        },
+                        yellow: {
+                            400: '#FACC15',
+                            500: '#F59E0B',
+                        },
+                        orange: {
+                            500: '#F97316',
+                            600: '#EA580C',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f0716;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(126, 34, 206, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(249, 115, 22, 0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            background: rgba(24, 15, 38, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #FACC15 0%, #F97316 50%, #C084FC 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            border-color: #FACC15;
+            box-shadow: 0 4px 20px -2px rgba(250, 204, 21, 0.25);
+        }
+
+        .option-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Custom Toast Notification */
+        #toast {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between p-4 sm:p-6 md:p-8">
+
+    <!-- Header / Brand -->
+    <header class="max-w-3xl mx-auto w-full text-center py-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-900/50 border border-purple-500/30 text-yellow-400 text-xs sm:text-sm font-semibold tracking-wide uppercase mb-2">
+            <i class="fa-solid fa-bolt"></i> College Life Edition
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-gradient uppercase">
+            REALITY CHECK
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-medium">Face Your Truth • Stop Lying To Yourself</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-2xl mx-auto w-full my-auto py-4">
+
+        <!-- SCREEN 1: WELCOME SCREEN -->
+        <div id="welcome-screen" class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl text-center space-y-6">
+            <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-orange-500 rounded-2xl mx-auto flex items-center justify-center text-3xl text-yellow-300 shadow-lg rotate-3">
+                <i class="fa-solid fa-masks-theater"></i>
+            </div>
+
+            <div class="space-y-2">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Who are we roasting today?</h2>
+                <p class="text-slate-300 text-sm sm:text-base">Answer 10 honest questions about sleeping, studying, and daily college chaos to reveal your true archetype.</p>
+            </div>
+
+            <form id="start-form" onsubmit="startGame(event)" class="space-y-4 max-w-sm mx-auto pt-2">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="player-name" 
+                        required 
+                        maxlength="20"
+                        placeholder="Enter your name..." 
+                        class="w-full px-5 py-4 rounded-xl bg-slate-900/80 border-2 border-purple-500/30 text-white placeholder-slate-500 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 text-center font-bold text-lg"
+                    >
+                </div>
+                <button 
+                    type="submit" 
+                    class="w-full py-4 px-8 rounded-xl bg-gradient-to-r from-yellow-400 via-orange-500 to-purple-600 text-slate-950 font-black text-lg uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
+                >
+                    <span>Expose My Truth</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- SCREEN 2: QUIZ SCREEN -->
+        <div id="quiz-screen" class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl hidden space-y-6">
+            <!-- Progress & Header -->
+            <div class="space-y-3">
+                <div class="flex justify-between items-center text-xs sm:text-sm font-bold text-slate-400">
+                    <span id="question-number" class="text-yellow-400 uppercase tracking-wider">Question 1 of 10</span>
+                    <span id="progress-percent" class="text-slate-400">10%</span>
+                </div>
+                <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full transition-all duration-300 w-1/10"></div>
+                </div>
+            </div>
+
+            <!-- Question text -->
+            <h2 id="question-text" class="text-xl sm:text-2xl font-bold text-white min-h-[60px] flex items-center">
+                Loading question...
+            </h2>
+
+            <!-- Options Container -->
+            <div id="options-container" class="grid grid-cols-1 gap-3 sm:gap-4 pt-2">
+                <!-- Options injected via JavaScript -->
+            </div>
+        </div>
+
+        <!-- SCREEN 3: RESULTS SCREEN -->
+        <div id="result-screen" class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl hidden space-y-8 text-center">
+            
+            <div class="space-y-2">
+                <p class="text-yellow-400 text-sm font-bold uppercase tracking-widest" id="result-greeting">Result Unlocked!</p>
+                <h2 id="result-header" class="text-2xl sm:text-4xl font-black text-white">
+                    [Player Name], Your Reality Check is In!
+                </h2>
+            </div>
+
+            <!-- Archetype Display Card -->
+            <div class="bg-slate-900/90 border-2 border-yellow-400/40 rounded-2xl p-6 sm:p-8 space-y-4 relative overflow-hidden shadow-xl">
+                <div class="absolute -right-6 -bottom-6 opacity-10 text-9xl text-yellow-400" id="bg-badge-icon">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+
+                <div class="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-purple-600 via-orange-500 to-yellow-400 text-slate-950 text-4xl sm:text-5xl shadow-lg mx-auto" id="result-icon">
+                    <i class="fa-solid fa-ghost"></i>
+                </div>
+
+                <div>
+                    <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-orange-500/20 text-orange-400 border border-orange-500/30">Official Diagnosis</span>
+                    <h3 id="archetype-title" class="text-2xl sm:text-3xl font-black text-gradient mt-2">
+                        Professional Procrastinator
+                    </h3>
+                </div>
+
+                <p id="archetype-description" class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-lg mx-auto">
+                    Description goes here...
+                </p>
+            </div>
+
+            <!-- Survival Tips / Traits -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                <div class="bg-purple-950/40 border border-purple-500/20 rounded-xl p-4 space-y-1">
+                    <div class="text-yellow-400 font-bold text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-fire"></i> Superpower
+                    </div>
+                    <p id="superpower-text" class="text-slate-200 text-xs sm:text-sm">Finishing 3-week assignments in 18 minutes.</p>
+                </div>
+                <div class="bg-orange-950/40 border border-orange-500/20 rounded-xl p-4 space-y-1">
+                    <div class="text-orange-400 font-bold text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> Survival Tip
+                    </div>
+                    <p id="survival-tip-text" class="text-slate-200 text-xs sm:text-sm">Set alarm clocks in another neighborhood.</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button 
+                    onclick="restartGame()" 
+                    class="flex-1 py-3.5 px-6 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-base transition-colors flex items-center justify-center gap-2 border border-slate-700"
+                >
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Play Again</span>
+                </button>
+                <button 
+                    onclick="shareResult()" 
+                    class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-slate-950 font-black text-base hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg"
+                >
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Share Result</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-yellow-400 text-slate-950 px-6 py-3 rounded-full font-bold shadow-2xl opacity-0 pointer-events-none flex items-center gap-2 border border-slate-900 z-50">
+        <i class="fa-solid fa-circle-check text-slate-950"></i>
+        <span id="toast-message">Copied to clipboard!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="max-w-2xl mx-auto w-full text-center py-4 text-xs text-slate-500">
+        REALITY CHECK © 2026 • Built for student laughs & reality slaps
+    </footer>
+
+    <!-- Game Logic JavaScript -->
+    <script>
+        // State variables
+        let playerName = "";
+        let currentQuestionIndex = 0;
+        let archetypeScores = {
+            A: 0, // Last-Minute Legend
+            B: 0, // Sleep Champion
+            C: 0, // Bunk Master
+            D: 0  // Overthinking Specialist
+        };
+
+        // Questions Data
+        const questions = [
+            {
+                q: "Alarm goes off at 7:00 AM for an 8:00 AM lecture. You:",
+                options: [
+                    { text: "A) Snooze until 7:55 AM, put on a hoodie, and run like Sonic.", type: "A" },
+                    { text: "B) Turn off alarm, sleep till 12 PM, attend afternoon class mentally absent.", type: "B" },
+                    { text: "C) Re-calculate how many attendance points you can afford to lose today.", type: "C" },
+                    { text: "D) Lie in bed for 45 minutes contemplating the meaning of existence and life decisions.", type: "D" }
+                ]
+            },
+            {
+                q: "Deadline is tonight at 11:59 PM. When do you start the assignment?",
+                options: [
+                    { text: "A) 11:15 PM with 3 energy drinks and 4 tabs of ChatGPT.", type: "A" },
+                    { text: "B) I’ll start now... right after this 4-hour YouTube video on deep-sea facts.", type: "B" },
+                    { text: "C) What assignment?", type: "C" },
+                    { text: "D) 3 days ago, but I’ve re-written the intro 47 times because it didn't feel right.", type: "D" }
+                ]
+            },
+            {
+                q: "How do you prepare for midterms?",
+                options: [
+                    { text: "A) '12-hour speedrun study night' before the exam. Adrenaline is my tutor.", type: "A" },
+                    { text: "B) Open textbook -> eyes heavy -> woke up 8 hours later on top of Page 4.", type: "B" },
+                    { text: "C) Call friends to check if anyone else knows nothing so we can fail in solidarity.", type: "C" },
+                    { text: "D) Create a 15-color aesthetic study schedule that I stick to for exactly 12 minutes.", type: "D" }
+                ]
+            },
+            {
+                q: "Your average daily screen time is:",
+                options: [
+                    { text: "A) 14 hours, mostly swiping between 5 apps in a loop.", type: "A" },
+                    { text: "B) High, but mostly dark mode while lying in bed sideways.", type: "B" },
+                    { text: "C) Low in class, high everywhere else.", type: "C" },
+                    { text: "D) 9 hours spent reading reviews before buying a $2 pen.", type: "D" }
+                ]
+            },
+            {
+                q: "How do you handle group projects?",
+                options: [
+                    { text: "A) Do 90% of the work in a 2 AM frenzy because trust issues.", type: "A" },
+                    { text: "B) Agree to do slides, fall asleep during meetings, submit default template.", type: "B" },
+                    { text: "C) Show up on presentation day and say 'And now, moving on to the next slide...'", type: "C" },
+                    { text: "D) Draft a 5-page outline, then spend 2 hours stressing over team group-chat tones.", type: "D" }
+                ]
+            },
+            {
+                q: "Group chat gets a message 'Did anyone finish the homework?':",
+                options: [
+                    { text: "A) 'Finishing it now (started 4 mins ago)'", type: "A" },
+                    { text: "B) *Left on read because you're currently in REM sleep*", type: "B" },
+                    { text: "C) 'There was homework? 😂'", type: "C" },
+                    { text: "D) Type a detailed explanation, erase it, retype, send just 'yeah'.", type: "D" }
+                ]
+            },
+            {
+                q: "What is your primary source of daily energy?",
+                options: [
+                    { text: "A) Pure panic and iced coffee.", type: "A" },
+                    { text: "B) 10-hour sleep cycles with power naps in between.", type: "B" },
+                    { text: "C) The joy of marking 'absent' without care.", type: "C" },
+                    { text: "D) Over-analyzing interactions from 2019.", type: "D" }
+                ]
+            },
+            {
+                q: "When sitting in a boring lecture, you:",
+                options: [
+                    { text: "A) Try to finish another assignment due in 10 minutes.", type: "A" },
+                    { text: "B) Master the art of sleeping with eyes half-open.", type: "B" },
+                    { text: "C) Quietly slip out the back door during roll call.", type: "C" },
+                    { text: "D) Wonder if the professor secretly hates you because they looked your way.", type: "D" }
+                ]
+            },
+            {
+                q: "Clean your desk/room?",
+                options: [
+                    { text: "A) Only when an important exam is tomorrow and suddenly cleaning is urgent.", type: "A" },
+                    { text: "B) My bed is my desk, my wardrobe, and my home.", type: "B" },
+                    { text: "C) Clean? I live in organized chaos.", type: "C" },
+                    { text: "D) Organize items by color, size, and spiritual alignment.", type: "D" }
+                ]
+            },
+            {
+                q: "What's your official motto for surviving college?",
+                options: [
+                    { text: "A) 'If it's submitted at 11:58 PM, it's submitted on time.'", type: "A" },
+                    { text: "B) 'Bed is the safest place on earth.'", type: "B" },
+                    { text: "C) 'Attendance is temporary, memories are forever.'", type: "C" },
+                    { text: "D) 'What if everything goes wrong?'", type: "D" }
+                ]
+            }
+        ];
+
+        // Archetypes Result Definitions
+        const archetypes = {
+            A: {
+                title: "Last-Minute Legend",
+                icon: "fa-bolt-lightning",
+                description: "You operate exclusively on pure adrenaline, extreme panic, and cold caffeine. Deadlines aren't warnings to you—they're the official start signals. You produce master-level essays in 12 minutes flat.",
+                superpower: "Writing 2,000 words in 14 minutes at 11:45 PM.",
+                survivalTip: "Keep your laptop charger plugged in; panic drains battery life fast."
+            },
+            B: {
+                title: "Sleep Champion",
+                icon: "fa-bed",
+                description: "You have turned sleeping into an Olympic sport. Alarm clocks are mere background noise to your peaceful REM sleep. Your bed is your primary residence, sanctuary, and classroom.",
+                superpower: "Napping anywhere, anytime, regardless of noise or impending exams.",
+                survivalTip: "Set at least 14 alarm sounds, preferably consisting of siren noises."
+            },
+            C: {
+                title: "Bunk Master",
+                icon: "fa-door-open",
+                description: "Your attendance record is a mythical legend. You treat class syllabi as 'optional suggestions' and excel at calculating minimum passing attendance with surgical precision.",
+                superpower: "Disappearing from class the exact second roll call finishes.",
+                survivalTip: "Make friends with people in the front row so you can copy their notes."
+            },
+            D: {
+                title: "Overthinking Specialist",
+                icon: "fa-brain",
+                description: "You spend 10% of your time doing work and 90% stressing over how the work will be judged. You color-code your notes, rewrite intros 50 times, and re-read emails before pressing send.",
+                superpower: "Predicting 4,000 worst-case scenarios before 9:00 AM.",
+                survivalTip: "Remember: 'Done' is always better than 'Perfect'!"
+            },
+            // Fallback / Hybrid Archetype
+            E: {
+                title: "Professional Procrastinator",
+                icon: "fa-hourglass-half",
+                description: "A well-balanced master of delay tactics. You combine sleep craving, last-minute rushing, and overthinking into a fine art form of pure procrastination.",
+                superpower: "Finding 10 fresh ways to avoid work every single hour.",
+                survivalTip: "Just do 5 minutes of work today. Then go back to memes."
+            }
+        };
+
+        // Start Game
+        function startGame(e) {
+            e.preventDefault();
+            const input = document.getElementById('player-name').value.trim();
+            if(!input) return;
+
+            playerName = input;
+            currentQuestionIndex = 0;
+            archetypeScores = { A: 0, B: 0, C: 0, D: 0 };
+
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            renderQuestion();
+        }
+
+        // Render Current Question
+        function renderQuestion() {
+            const qData = questions[currentQuestionIndex];
+            
+            // Progress Bar & Texts
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('question-number').innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            document.getElementById('progress-percent').innerText = `${Math.round(progress)}%`;
+
+            // Question Text
+            document.getElementById('question-text').innerText = qData.q;
+
+            // Render Options
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-slate-700/60 text-slate-100 font-medium text-sm sm:text-base flex items-start gap-3 hover:bg-purple-900/40 text-left";
+                btn.onclick = () => selectOption(opt.type);
+                btn.innerHTML = `
+                    <span class="text-slate-200">${opt.text}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        // Option selection handler
+        function selectOption(type) {
+            if(archetypeScores[type] !== undefined) {
+                archetypeScores[type]++;
+            }
+
+            currentQuestionIndex++;
+
+            if(currentQuestionIndex < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Calculate and Show Results
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            // Find highest score
+            let maxScore = -1;
+            let winningType = 'E'; // Default hybrid fallback
+
+            for (const [type, score] of Object.entries(archetypeScores)) {
+                if (score > maxScore) {
+                    maxScore = score;
+                    winningType = type;
+                }
+            }
+
+            const resultData = archetypes[winningType] || archetypes.E;
+
+            // Update UI elements
+            document.getElementById('result-header').innerText = `${playerName}, Your Reality Check is In!`;
+            document.getElementById('archetype-title').innerText = resultData.title;
+            document.getElementById('archetype-description').innerText = resultData.description;
+            document.getElementById('superpower-text').innerText = resultData.superpower;
+            document.getElementById('survival-tip-text').innerText = resultData.survivalTip;
+
+            // Icons update
+            document.getElementById('result-icon').innerHTML = `<i class="fa-solid ${resultData.icon}"></i>`;
+            document.getElementById('bg-badge-icon').innerHTML = `<i class="fa-solid ${resultData.icon}"></i>`;
+        }
+
+        // Restart Game
+        function restartGame() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('welcome-screen').classList.remove('hidden');
+            document.getElementById('player-name').value = '';
+        }
+
+        // Share / Copy Results
+        function shareResult() {
+            const title = document.getElementById('archetype-title').innerText;
+            const textToCopy = `🔥 REALITY CHECK RESULT 🔥\n\n${playerName} scored: "${title}" on Reality Check!\n\nTake the test and face your truth!`;
+
+            // Copy using standard clipboard fallback
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast("Copied result to clipboard!");
+                }).catch(() => {
+                    fallbackCopyText(textToCopy);
+                });
+            } else {
+                fallbackCopyText(textToCopy);
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("Copied result to clipboard!");
+            } catch (err) {
+                showToast("Failed to copy result.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Toast feedback handler
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
